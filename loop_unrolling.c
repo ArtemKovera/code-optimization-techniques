@@ -25,13 +25,15 @@ double mult(const double a[], const size_t size)
 
 //function for computing the product of an array of n double-precision numbers
 //utilizing 3x loop unrolling
-double multWithLoopUnrolling(const double a[], const size_t size)
+double multWithLoop3xUnrolling(const double a[], const size_t size)
 {
-    size_t i;
+    size_t i, s;
+    s = size - 2;
     double x, y, z;
     double result = 1;
+    
 
-    for (i = 0; i < size-2; i+= 3)
+    for (i = 0; i < s; i+= 3)
     {
         x = a[i];
         y = a[i+1];
@@ -45,11 +47,40 @@ double multWithLoopUnrolling(const double a[], const size_t size)
     return result;
 }
 
+//function for computing the product of an array of n double-precision numbers
+//utilizing 5x loop unrolling
+double multiplyWith5xLoopUnrolling(const double array[], const size_t size)
+{
+    size_t i, s;
+    s = size - 4;
+    double a, b, c, d, e;
+    double result = 1;
+
+    for(i = 0; i < s; i += 5)
+    {
+        a = array[i];
+        b = array[i+1];
+        c = array[i+2];
+        d = array[i+3];
+        e = array[i+4];
+
+        result = result * a * b * c * d * e;
+    }
+
+    for(; i < size; i++)
+    {
+        result *= array[i];
+    }
+
+    return result;
+}
+
 int main ()
 {
     clock_t start1, end1, start2, end2, start3, end3, start4, end4;
-    clock_t start5, end5, start6, end6, start7, end7, start8, end8;
-    
+    clock_t start3x1, end3x1, start3x2, end3x2, start3x3, end3x3, start3x4, end3x4;
+    clock_t start5x1, end5x1, start5x2, end5x2, start5x3, end5x3, start5x4, end5x4;  
+
     const size_t SIZE = 200;
         
     double arr [] = {[0 ... 999999] = 1.00001}; //works only with gcc
@@ -82,48 +113,69 @@ int main ()
                         8.1, 1.3, 3.2, 0.4   
                      };
 
+
     printf("Calling functions with first set of data: \n");
     start1 = clock();
     mult(arr, 1000000);
     end1 = clock();
     printf("the number of clock ticks elapsed for function with NO loop unrolling - %li\n", end1 - start1);
     
-    start2 = clock();
-    multWithLoopUnrolling(arr, 1000000);
-    end2 = clock();
-    printf("the number of clock ticks elapsed for function with loop unrolling   - %li\n", end2 - start2);
+    start3x1 = clock();
+    multWithLoop3xUnrolling(arr, 1000000);
+    end3x1 = clock();
+    printf("the number of clock ticks elapsed for function with 3x loop unrolling   - %li\n", end3x1 - start3x1);
 
-    start3 = clock();
+    start5x1 = clock();
+    multiplyWith5xLoopUnrolling(arr, 1000000);
+    end5x1 = clock();
+    printf("the number of clock ticks elapsed for function with 5x loop unrolling   - %li\n", end5x1 - start5x1);  
+
+    start2 = clock();
     mult(arr, 1000000);
+    end2 = clock();
+    printf("the number of clock ticks elapsed for function with NO loop unrolling - %li (second check)\n", end2 - start2);
+    
+    start3x2 = clock();
+    multWithLoop3xUnrolling(arr, 1000000);
+    end3x2 = clock();
+    printf("the number of clock ticks elapsed for function with 3x loop unrolling   - %li (second check)\n", end3x2 - start3x2);
+
+    start5x2 = clock();
+    multiplyWith5xLoopUnrolling(arr, 1000000);
+    end5x2 = clock();
+    printf("the number of clock ticks elapsed for function with 5x loop unrolling   - %li (second check)\n", end5x2 - start5x2);        
+
+
+    printf("\nCalling functions with another set of data: \n");
+    start3 = clock();
+    mult(arr2, SIZE);
     end3 = clock();
-    printf("the number of clock ticks elapsed for function with NO loop unrolling - %li  (second check)\n", end3 - start3); 
+    printf("the number of clock ticks elapsed for function with NO loop unrolling - %li\n", end3 - start3);
+    
+    start3x3 = clock();
+    multWithLoop3xUnrolling(arr2, SIZE);
+    end3x3 = clock();
+    printf("the number of clock ticks elapsed for function with 3x loop unrolling   - %li\n", end3x3 - start3x3);
+
+    start5x3 = clock();
+    multiplyWith5xLoopUnrolling(arr2, SIZE);
+    end5x3 = clock();
+    printf("the number of clock ticks elapsed for function with 5x loop unrolling   - %li\n", end5x3 - start5x3);  
 
     start4 = clock();
-    multWithLoopUnrolling(arr, 1000000);
+    mult(arr2, SIZE);
     end4 = clock();
-    printf("the number of clock ticks elapsed for function with loop unrolling   - %li  (second check)\n", end4 - start4);  
+    printf("the number of clock ticks elapsed for function with NO loop unrolling - %li (second check)\n", end4 - start4);
     
-    
-    printf("\nCalling functions with another set of data: \n");
-    start5 = clock();
-    mult(arr2, SIZE);
-    end5 = clock();
-    printf("the number of clock ticks elapsed for function with NO loop unrolling - %li\n", end5 - start5);    
+    start3x4 = clock();
+    multWithLoop3xUnrolling(arr2, SIZE);
+    end3x4 = clock();
+    printf("the number of clock ticks elapsed for function with 3x loop unrolling   - %li (second check)\n", end3x4 - start3x4);
 
-    start6 = clock();
-    multWithLoopUnrolling(arr2, SIZE);
-    end6 = clock();
-    printf("the number of clock ticks elapsed for function with loop unrolling - %li\n", end6 - start6);  
-
-    start7 = clock();
-    mult(arr2, SIZE);
-    end7 = clock();
-    printf("the number of clock ticks elapsed for function with NO loop unrolling - %li (second check)\n", end7 - start7);    
-
-    start8 = clock();
-    multWithLoopUnrolling(arr2, SIZE);
-    end8 = clock();
-    printf("the number of clock ticks elapsed for function with loop unrolling - %li (second check)\n", end8 - start8);         
+    start5x4 = clock();
+    multiplyWith5xLoopUnrolling(arr2, SIZE);
+    end5x4 = clock();
+    printf("the number of clock ticks elapsed for function with 5x loop unrolling   - %li (second check)\n", end5x4 - start5x4);            
     
     return 0;
 }
