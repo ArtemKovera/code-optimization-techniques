@@ -6,6 +6,7 @@
 */
 #include<stdio.h>
 #include<stdlib.h>
+#include<time.h>
 
 //function for computing the product of an array of n double-precision numbers
 //NO loop unrolling
@@ -46,6 +47,7 @@ double multWithLoopUnrolling(const double a[], const size_t size)
 
 int main ()
 {
+    clock_t start1, end1, start2, end2, start3, end3;
     const size_t SIZE = 40;
     
     double arr [] = {
@@ -58,8 +60,22 @@ int main ()
 
     
     double arr2 [] = {[0 ... 999999] = 1.00001}; //works only with gcc
+    
+    start1 = clock();
+    mult(arr2, 1000000);
+    end1 = clock();
+    printf("the number of clock ticks elapsed for function with NO loop unrolling - %li\n", end1 - start1);
+    
+    start2 = clock();
+    multWithLoopUnrolling(arr2, 1000000);
+    end2 = clock();
+    printf("the number of clock ticks elapsed for function with loop unrolling   - %li\n", end2 - start2);
 
-    printf("the result is %f\n", multWithLoopUnrolling(arr2, 1000000));
+    start3 = clock();
+    mult(arr2, 1000000);
+    end3 = clock();
+    printf("the number of clock ticks elapsed for function with NO loop unrolling - %li  (the second check)\n", end3 - start3);    
+
 
     return 0;
 }
