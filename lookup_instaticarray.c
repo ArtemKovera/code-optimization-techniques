@@ -46,45 +46,56 @@ int lookUpWithStatic(size_t index)
     return arr[index];
 }
 
+
+
 int main()
 {
     srand(time(NULL)); 
     const size_t SIZE = 98;
 
-    clock_t start1, end1, start2, end2, start3, end3, start4, end4;
+     
+    struct timespec start1, end1, start2, end2, start3, end3, start4, end4;
+    double tdiff1, tdiff2, tdiff3, tdiff4;
 
 
-    start1 = clock();
+    clock_gettime(CLOCK_MONOTONIC, &start1);
     for(size_t i = 0; i < 100; i++)
     {
         lookUpWithoutStatic(rand()%SIZE);
     }
-    end1 = clock();
-    printf("the number of clock ticks elapsed for 100 calls of a function with NONE-static array - %li\n", end1 - start1);
+    clock_gettime(CLOCK_MONOTONIC, &end1);
+    tdiff1 = (end1.tv_sec - start1.tv_sec) + 1e-9*(end1.tv_nsec - start1.tv_nsec);
+    printf("100 calls of a function with NONE-static array lasts   %f  seconds\n", tdiff1);
 
-    start2 = clock();
+
+    clock_gettime(CLOCK_MONOTONIC, &start2);
     for(size_t i = 0; i < 100; i++)
     {
         lookUpWithStatic(rand()%SIZE);
     }
-    end2 = clock();
-    printf("the number of clock ticks elapsed for 100 calls of a function with static array - %li\n", end2 - start2);
+    clock_gettime(CLOCK_MONOTONIC, &end2);
+    tdiff2 = (end2.tv_sec - start2.tv_sec) + 1e-9*(end2.tv_nsec - start2.tv_nsec);
+    printf("100 calls of a function with static array lasts        %f  seconds\n", tdiff2);
 
-    start3 = clock();
+
+    clock_gettime(CLOCK_MONOTONIC, &start3);
     for(size_t i = 0; i < 100; i++)
     {
         lookUpWithoutStatic(rand()%SIZE);
     }
-    end3 = clock();
-    printf("the number of clock ticks elapsed for 100 calls of a function with NONE-static array (second check) - %li\n", end3 - start3);
+    clock_gettime(CLOCK_MONOTONIC, &end3);
+    tdiff3 = (end3.tv_sec - start3.tv_sec) + 1e-9*(end3.tv_nsec - start3.tv_nsec);      
+    printf("100 calls of a function with NONE-static array lasts   %f  seconds (second check)\n", tdiff3);
 
-    start4 = clock();
+
+    clock_gettime(CLOCK_MONOTONIC, &start4);
     for(size_t i = 0; i < 100; i++)
     {
         lookUpWithStatic(rand()%SIZE);
     }
-    end4 = clock();
-    printf("the number of clock ticks elapsed for 100 calls of a function with static array (second check) - %li\n", end4 - start4);   
+    clock_gettime(CLOCK_MONOTONIC, &end4);
+    tdiff4 = (end4.tv_sec - start4.tv_sec) + 1e-9*(end4.tv_nsec - start4.tv_nsec);   
+    printf("100 calls of a function with static array lasts        %f  seconds (second check)\n", tdiff4);   
 
     return 0;
 }
